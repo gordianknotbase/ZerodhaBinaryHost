@@ -13,14 +13,6 @@ for /f "delims=" %%a in ('type "%TEMP%\remote_version.txt"') do set "LATEST_VERS
 echo [INFO] Latest version = %LATEST_VERSION%
 
 
-:: Validate version format
-echo %LATEST_VERSION% | findstr /r "^[0-9]\+\.[0-9]\+\.[0-9]\+$" >nul
-if %errorlevel% neq 0 (
-    echo [ERROR] Invalid version format: %LATEST_VERSION%
-    exit /b 1
-)
-
-
 :: Detect local version from JAR filename
 set "LOCAL_VERSION=none"
 set "JAR_FOUND=false"
