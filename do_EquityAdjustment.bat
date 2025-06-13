@@ -11,20 +11,21 @@ for /f "delims=" %%a in ('type "%TEMP%\remote_version.txt"') do set "LATEST_VERS
 
 echo [INFO] Latest version = %LATEST_VERSION%
 
-:: Detect local version from JAR file
+:: Detect local version from JAR filename
 set "LOCAL_VERSION=none"
 for %%f in ("%APP_DIR%\target\zerodhaautomation-*-SNAPSHOT.jar") do (
-    set "JAR_NAME=%%~nxf"
-    set "JAR_NAME=!JAR_NAME:zerodhaautomation-=!"
-    set "JAR_NAME=!JAR_NAME:-SNAPSHOT=!"
-    set "LOCAL_VERSION=!JAR_NAME!"
+    set "FILENAME=%%~nxf"
+    set "FILENAME=!FILENAME:zerodhaautomation-=!"
+    set "FILENAME=!FILENAME:-SNAPSHOT=!"
+    set "FILENAME=!FILENAME:.jar=!"
+    set "LOCAL_VERSION=!FILENAME!"
     goto :found_version
 )
 :found_version
 
 echo [INFO] Local version = %LOCAL_VERSION%
 
-:: Construct ZIP URL based on latest version
+:: Construct ZIP URL
 set ZIP_URL=https://github.com/gordianknotbase/ZerodhaBinaryHost/releases/download/v%LATEST_VERSION%/ZerodhaSetup-v%LATEST_VERSION%.zip
 set ZIP_FILE=%TEMP%\ZerodhaSetup-v%LATEST_VERSION%.zip
 
@@ -44,7 +45,7 @@ if "%LOCAL_VERSION%" NEQ "%LATEST_VERSION%" (
     echo [INFO] Already on the latest version.
 )
 
-:: Run the updated JAR
+:: Run the JAR
 echo [INFO] Running equityAdjustment...
 "%APP_DIR%\sapmachine-jre-21.0.7\bin\java" -jar "%APP_DIR%\target\zerodhaautomation-%LATEST_VERSION%-SNAPSHOT.jar" equityAdjustment
 
