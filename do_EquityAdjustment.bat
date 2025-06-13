@@ -19,17 +19,20 @@ if exist "%LOCAL_VERSION_FILE%" (
 )
 echo [INFO] Local version = %LOCAL_VERSION%
 
+:: Construct ZIP URL based on latest version
+set ZIP_URL=https://github.com/gordianknotbase/ZerodhaBinaryHost/releases/download/v%LATEST_VERSION%/ZerodhaSetup-v%LATEST_VERSION%.zip
+set ZIP_FILE=%TEMP%\ZerodhaSetup-v%LATEST_VERSION%.zip
+
 :: Compare versions
 if "%LOCAL_VERSION%" NEQ "%LATEST_VERSION%" (
     echo [INFO] New version detected! Downloading ZIP...
-    set ZIP_URL=https://github.com/gordianknotbase/ZerodhaBinaryHost/releases/download/v%LATEST_VERSION%/ZerodhaSetup-v%LATEST_VERSION%.zip
-    set ZIP_FILE=%TEMP%\ZerodhaSetup-v%LATEST_VERSION%.zip
 
     powershell -Command "(New-Object Net.WebClient).DownloadFile('%ZIP_URL%', '%ZIP_FILE%')"
 
     echo [INFO] Cleaning old files...
     del /q "%APP_DIR%\*.jar"
-    rmdir /s /q "%APP_DIR%\target"
+    del /q "%APP_DIR%\target\*" >nul 2>&1
+    rmdir /s /q "%APP_DIR%\target" >nul 2>&1
 
     echo [INFO] Extracting new setup...
     powershell -Command "Expand-Archive -Path '%ZIP_FILE%' -DestinationPath '%APP_DIR%' -Force"
