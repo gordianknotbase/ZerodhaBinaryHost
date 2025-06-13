@@ -8,17 +8,17 @@ set LATEST_VERSION_URL=https://raw.githubusercontent.com/gordianknotbase/Zerodha
 :: Fetch latest version
 echo [INFO] Fetching latest version from GitHub...
 powershell -Command "(New-Object Net.WebClient).DownloadString('%LATEST_VERSION_URL%')" > "%TEMP%\remote_version.txt"
-set /p LATEST_VERSION=<"%TEMP%\remote_version.txt"
-for /f "tokens=* delims= " %%a in ("%LATEST_VERSION%") do set LATEST_VERSION=%%a
+for /f "delims=" %%a in ('type "%TEMP%\remote_version.txt"') do set "LATEST_VERSION=%%a"
+
 echo [INFO] Latest version = %LATEST_VERSION%
 
 :: Read local version
 if exist "%LOCAL_VERSION_FILE%" (
-    set /p LOCAL_VERSION=<"%LOCAL_VERSION_FILE%"
-    for /f "tokens=* delims= " %%a in ("%LOCAL_VERSION%") do set LOCAL_VERSION=%%a
+    for /f "delims=" %%a in ('type "%LOCAL_VERSION_FILE%"') do set "LOCAL_VERSION=%%a"
 ) else (
     set LOCAL_VERSION=none
 )
+
 echo [INFO] Local version = %LOCAL_VERSION%
 
 
