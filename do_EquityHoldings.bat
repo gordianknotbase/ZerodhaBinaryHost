@@ -29,7 +29,6 @@ if "%LOCAL_VERSION%" NEQ "%LATEST_VERSION%" (
 
     echo [INFO] Cleaning old files...
     del /q "%APP_DIR%\*.jar"
-    del /q "%APP_DIR%\*.bat"
     rmdir /s /q "%APP_DIR%\target"
 
     echo [INFO] Extracting new setup...
