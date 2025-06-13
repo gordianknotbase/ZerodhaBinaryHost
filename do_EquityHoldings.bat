@@ -1,45 +1,43 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 
 set APP_DIR=C:\ZeroAuto
-set LOCAL_VERSION_FILE=%APP_DIR%\version.txt
 set LATEST_VERSION_URL=https://raw.githubusercontent.com/gordianknotbase/ZerodhaBinaryHost/main/version.txt
 
-:: Fetch latest version
 echo [INFO] Fetching latest version from GitHub...
 powershell -Command "(New-Object Net.WebClient).DownloadString('%LATEST_VERSION_URL%')" > "%TEMP%\remote_version.txt"
-for /f "delims=" %%a in ('type "%TEMP%\remote_version.txt"') do set "LATEST_VERSION=%%a"
-
+set /p LATEST_VERSION=<"%TEMP%\remote_version.txt"
 echo [INFO] Latest version = %LATEST_VERSION%
 
-:: Read local version
-if exist "%LOCAL_VERSION_FILE%" (
-    for /f "delims=" %%a in ('type "%LOCAL_VERSION_FILE%"') do set "LOCAL_VERSION=%%a"
-) else (
-    set LOCAL_VERSION=none
+:: Detect local version from JAR filename
+set "LOCAL_VERSION=none"
+if exist "%APP_DIR%\target" (
+    for %%f in ("%APP_DIR%\target\zerodhaautomation-*-SNAPSHOT.jar") do (
+        for %%g in ("%%~nxf") do (
+            set "FILENAME=%%~nxf"
+            set "FILENAME=!FILENAME:zerodhaautomation-=!"
+            set "FILENAME=!FILENAME:-SNAPSHOT.jar=!"
+            set "LOCAL_VERSION=!FILENAME!"
+        )
+    )
 )
-
-echo [INFO] Local version = %LOCAL_VERSION%
-
-
-:: Construct ZIP URL based on latest version
-set ZIP_URL=https://github.com/gordianknotbase/ZerodhaBinaryHost/releases/download/v%LATEST_VERSION%/ZerodhaSetup-v%LATEST_VERSION%.zip
-set ZIP_FILE=%TEMP%\ZerodhaSetup-v%LATEST_VERSION%.zip
+echo [INFO] Local version (from JAR) = %LOCAL_VERSION%
 
 :: Compare versions
 if "%LOCAL_VERSION%" NEQ "%LATEST_VERSION%" (
     echo [INFO] New version detected! Downloading ZIP...
+    set ZIP_URL=https://github.com/gordianknotbase/ZerodhaBinaryHost/releases/download/v%LATEST_VERSION%/ZerodhaSetup-v%LATEST_VERSION%.zip
+    set ZIP_FILE=%TEMP%\ZerodhaSetup-v%LATEST_VERSION%.zip
 
     powershell -Command "(New-Object Net.WebClient).DownloadFile('%ZIP_URL%', '%ZIP_FILE%')"
 
     echo [INFO] Cleaning old files...
-    del /q "%APP_DIR%\target\*" >nul 2>&1
-    rmdir /s /q "%APP_DIR%\target" >nul 2>&1
+    del /q "%APP_DIR%\*.jar"
+    del /q "%APP_DIR%\*.bat"
+    rmdir /s /q "%APP_DIR%\target"
 
     echo [INFO] Extracting new setup...
     powershell -Command "Expand-Archive -Path '%ZIP_FILE%' -DestinationPath '%APP_DIR%' -Force"
-
-    echo %LATEST_VERSION% > "%LOCAL_VERSION_FILE%"
 ) else (
     echo [INFO] Already on the latest version.
 )
