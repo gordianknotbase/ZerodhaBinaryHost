@@ -30,7 +30,6 @@ if "%LOCAL_VERSION%" NEQ "%LATEST_VERSION%" (
     powershell -Command "(New-Object Net.WebClient).DownloadFile('%ZIP_URL%', '%ZIP_FILE%')"
 
     echo [INFO] Cleaning old files...
-    del /q "%APP_DIR%\*.jar"
     del /q "%APP_DIR%\target\*" >nul 2>&1
     rmdir /s /q "%APP_DIR%\target" >nul 2>&1
 
