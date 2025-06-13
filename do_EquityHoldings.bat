@@ -1,5 +1,5 @@
 @echo off
-setlocal
+setlocal enabledelayedexpansion
 
 set APP_DIR=C:\ZeroAuto
 set LATEST_VERSION_URL=https://raw.githubusercontent.com/gordianknotbase/ZerodhaBinaryHost/main/version.txt
@@ -13,17 +13,14 @@ echo [INFO] Latest version = %LATEST_VERSION%
 
 :: Detect local version from JAR file
 set "LOCAL_VERSION=none"
-if exist "%APP_DIR%\target" (
-    for %%f in ("%APP_DIR%\target\zerodhaautomation-*-SNAPSHOT.jar") do (
-        for %%g in ("%%~nxf") do (
-            set "FILENAME=%%~nxf"
-            setlocal enabledelayedexpansion
-            set "FILENAME=!FILENAME:zerodhaautomation-=!"
-            set "FILENAME=!FILENAME:-SNAPSHOT=!"
-            endlocal & set "LOCAL_VERSION=%FILENAME%"
-        )
-    )
+for %%f in ("%APP_DIR%\target\zerodhaautomation-*-SNAPSHOT.jar") do (
+    set "JAR_NAME=%%~nxf"
+    set "JAR_NAME=!JAR_NAME:zerodhaautomation-=!"
+    set "JAR_NAME=!JAR_NAME:-SNAPSHOT=!"
+    set "LOCAL_VERSION=!JAR_NAME!"
+    goto :found_version
 )
+:found_version
 
 echo [INFO] Local version = %LOCAL_VERSION%
 
