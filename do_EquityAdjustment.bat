@@ -12,6 +12,15 @@ for /f "delims=" %%a in ('type "%TEMP%\remote_version.txt"') do set "LATEST_VERS
 
 echo [INFO] Latest version = %LATEST_VERSION%
 
+
+:: Validate version format
+echo %LATEST_VERSION% | findstr /r "^[0-9]\+\.[0-9]\+\.[0-9]\+$" >nul
+if %errorlevel% neq 0 (
+    echo [ERROR] Invalid version format: %LATEST_VERSION%
+    exit /b 1
+)
+
+
 :: Detect local version from JAR filename
 set "LOCAL_VERSION=none"
 set "JAR_FOUND=false"
@@ -40,6 +49,11 @@ if "!LOCAL_VERSION!" NEQ "%LATEST_VERSION%" (
     echo [INFO] New version detected! Downloading ZIP...
 
     powershell -Command "(New-Object Net.WebClient).DownloadFile('%ZIP_URL%', '%ZIP_FILE%')"
+	
+	if not exist "%ZIP_FILE%" (
+    echo [ERROR] Failed to download update
+    exit /b 1
+)
 
     echo [INFO] Cleaning old files...
     del /q "%TARGET_DIR%\*" >nul 2>&1
