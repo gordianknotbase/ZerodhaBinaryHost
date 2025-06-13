@@ -2,6 +2,7 @@
 setlocal enabledelayedexpansion
 
 set APP_DIR=C:\ZeroAuto
+set TARGET_DIR=%APP_DIR%\target
 set LATEST_VERSION_URL=https://raw.githubusercontent.com/gordianknotbase/ZerodhaBinaryHost/main/version.txt
 
 :: Fetch latest version
@@ -13,13 +14,17 @@ echo [INFO] Latest version = %LATEST_VERSION%
 
 :: Detect local version from JAR filename
 set "LOCAL_VERSION=none"
-for %%f in ("%APP_DIR%\target\zerodhaautomation-*-SNAPSHOT.jar") do (
-    set "FILENAME=%%~nxf"
-    set "FILENAME=!FILENAME:zerodhaautomation-=!"
-    set "FILENAME=!FILENAME:-SNAPSHOT=!"
-    set "FILENAME=!FILENAME:.jar=!"
-    set "LOCAL_VERSION=!FILENAME!"
-    goto :found_version
+if exist "%TARGET_DIR%" (
+    for %%f in ("%TARGET_DIR%\zerodhaautomation-*-SNAPSHOT.jar") do (
+        echo [DEBUG] Found JAR: %%~nxf
+        set "FILENAME=%%~nxf"
+        set "FILENAME=!FILENAME:zerodhaautomation-=!"
+        set "FILENAME=!FILENAME:-SNAPSHOT=!"
+        set "LOCAL_VERSION=!FILENAME!"
+        goto :found_version
+    )
+) else (
+    echo [DEBUG] Target folder does not exist: %TARGET_DIR%
 )
 :found_version
 
@@ -36,8 +41,8 @@ if "%LOCAL_VERSION%" NEQ "%LATEST_VERSION%" (
     powershell -Command "(New-Object Net.WebClient).DownloadFile('%ZIP_URL%', '%ZIP_FILE%')"
 
     echo [INFO] Cleaning old files...
-    del /q "%APP_DIR%\target\*" >nul 2>&1
-    rmdir /s /q "%APP_DIR%\target" >nul 2>&1
+    del /q "%TARGET_DIR%\*" >nul 2>&1
+    rmdir /s /q "%TARGET_DIR%" >nul 2>&1
 
     echo [INFO] Extracting new setup...
     powershell -Command "Expand-Archive -Path '%ZIP_FILE%' -DestinationPath '%APP_DIR%' -Force"
@@ -47,6 +52,6 @@ if "%LOCAL_VERSION%" NEQ "%LATEST_VERSION%" (
 
 :: Run the JAR
 echo [INFO] Running equityHoldings...
-"%APP_DIR%\sapmachine-jre-21.0.7\bin\java" -jar "%APP_DIR%\target\zerodhaautomation-%LATEST_VERSION%-SNAPSHOT.jar" equityHoldings
+"%APP_DIR%\sapmachine-jre-21.0.7\bin\java" -jar "%TARGET_DIR%\zerodhaautomation-%LATEST_VERSION%-SNAPSHOT.jar" equityHoldings
 
 endlocal
