@@ -14,17 +14,18 @@ echo [INFO] Latest version = %LATEST_VERSION%
 
 :: Detect local version from JAR filename
 set "LOCAL_VERSION=none"
-if exist "%TARGET_DIR%" (
-    for %%f in ("%TARGET_DIR%\zerodhaautomation-*-SNAPSHOT.jar") do (
-        echo [DEBUG] Found JAR: %%~nxf
-        set "FILENAME=%%~n"
-        set "FILENAME=!FILENAME:zerodhaautomation-=!"
-        set "FILENAME=!FILENAME:-SNAPSHOT=!"
-        set "LOCAL_VERSION=!FILENAME!"
-        goto :found_version
-    )
-) else (
-    echo [DEBUG] Target folder does not exist: %TARGET_DIR%
+set "JAR_FOUND=false"
+for %%f in ("%TARGET_DIR%\zerodhaautomation-*-SNAPSHOT.jar") do (
+    set "FILENAME=%%~nxf"
+    set "FILENAME=!FILENAME:zerodhaautomation-=!"
+    set "FILENAME=!FILENAME:-SNAPSHOT=!"
+    set "LOCAL_VERSION=!FILENAME!"
+    set "JAR_FOUND=true"
+    goto :found_version
+)
+
+if /i "!JAR_FOUND!"=="false" (
+    echo [DEBUG] No local JAR found in: %TARGET_DIR%
 )
 :found_version
 
