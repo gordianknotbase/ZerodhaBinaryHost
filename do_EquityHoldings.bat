@@ -2,10 +2,8 @@
 setlocal
 
 set APP_DIR=C:\ZeroAuto
-set JAR_NAME=zerodhaautomation-%VERSION%-SNAPSHOT.jar
 set LOCAL_VERSION_FILE=%APP_DIR%\version.txt
 set LATEST_VERSION_URL=https://raw.githubusercontent.com/gordianknotbase/ZerodhaBinaryHost/main/version.txt
-set SETUP_ZIP_URL_TEMPLATE=https://github.com/gordianknotbase/ZerodhaBinaryHost/releases/download/v%VERSION%/ZerodhaSetup-v%VERSION%.zip
 
 :: Fetch latest version
 echo [INFO] Fetching latest version from GitHub...
@@ -33,7 +31,6 @@ if "%LOCAL_VERSION%" NEQ "%LATEST_VERSION%" (
     del /q "%APP_DIR%\*.jar"
     del /q "%APP_DIR%\*.bat"
     rmdir /s /q "%APP_DIR%\target"
-    rmdir /s /q "%APP_DIR%\conf"
 
     echo [INFO] Extracting new setup...
     powershell -Command "Expand-Archive -Path '%ZIP_FILE%' -DestinationPath '%APP_DIR%' -Force"
@@ -44,8 +41,7 @@ if "%LOCAL_VERSION%" NEQ "%LATEST_VERSION%" (
 )
 
 :: Run the updated JAR
-echo [INFO] Running equityHoldings...
+echo [INFO] Running equityAdjustment...
 "%APP_DIR%\sapmachine-jre-21.0.7\bin\java" -jar "%APP_DIR%\target\zerodhaautomation-%LATEST_VERSION%-SNAPSHOT.jar" equityHoldings
-
 
 endlocal
