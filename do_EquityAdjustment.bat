@@ -17,7 +17,7 @@ set "LOCAL_VERSION=none"
 if exist "%TARGET_DIR%" (
     for %%f in ("%TARGET_DIR%\zerodhaautomation-*-SNAPSHOT.jar") do (
         echo [DEBUG] Found JAR: %%~nxf
-        set "FILENAME=%%~nxf"
+        set "FILENAME=%%~n"
         set "FILENAME=!FILENAME:zerodhaautomation-=!"
         set "FILENAME=!FILENAME:-SNAPSHOT=!"
         set "LOCAL_VERSION=!FILENAME!"
