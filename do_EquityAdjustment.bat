@@ -3,6 +3,8 @@ setlocal enabledelayedexpansion
 
 set APP_DIR=C:\ZeroAuto
 set TARGET_DIR=%APP_DIR%\target
+set LOG_DIR=%APP_DIR%\logs
+set TRANS_DIR=%APP_DIR%\transactions
 set LATEST_VERSION_URL=https://raw.githubusercontent.com/gordianknotbase/ZerodhaBinaryHost/main/version.txt
 
 :: Fetch latest version
@@ -61,4 +63,10 @@ if "!LOCAL_VERSION!" NEQ "%LATEST_VERSION%" (
 echo [INFO] Running equityAdjustment...
 "%APP_DIR%\sapmachine-jre-21.0.7\bin\java" -jar "%TARGET_DIR%\zerodhaautomation-%LATEST_VERSION%-SNAPSHOT.jar" equityAdjustment
 
+	echo [INFO] Cleaning.....
+	del /q "%LOG_DIR%\*" >nul 2>&1
+	rmdir /s /q "%LOG_DIR%" >nul 2>&1
+	del /q "%TRANS_DIR%\*" >nul 2>&1
+	rmdir /s /q "%TRANS_DIR%" >nul 2>&1
+	echo [INFO] Cleaning Done.....
 endlocal
