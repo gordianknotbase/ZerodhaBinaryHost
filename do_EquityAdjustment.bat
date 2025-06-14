@@ -5,6 +5,7 @@ set APP_DIR=C:\ZeroAuto
 set TARGET_DIR=%APP_DIR%\target
 set LOG_DIR=%APP_DIR%\logs
 set TRANS_DIR=%APP_DIR%\transactions
+set HOLD_DIR=%APP_DIR%\Holdings
 set LATEST_VERSION_URL=https://raw.githubusercontent.com/gordianknotbase/ZerodhaBinaryHost/main/version.txt
 
 :: Fetch latest version
