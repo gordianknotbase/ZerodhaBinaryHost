@@ -5,6 +5,7 @@ set APP_DIR=C:\ZeroAuto
 set TARGET_DIR=%APP_DIR%\target
 set LOG_DIR=%APP_DIR%\logs
 set TRANS_DIR=%APP_DIR%\transactions
+set HOLD_DIR=%APP_DIR%\Holdings
 set LATEST_VERSION_URL=https://raw.githubusercontent.com/gordianknotbase/ZerodhaBinaryHost/main/version.txt
 
 :: Fetch latest version
@@ -68,6 +69,8 @@ echo [INFO] Running equityHoldings...
 	rmdir /s /q "%LOG_DIR%" >nul 2>&1
 	del /q "%TRANS_DIR%\*" >nul 2>&1
 	rmdir /s /q "%TRANS_DIR%" >nul 2>&1
+	del /q "%HOLD_DIR%\*" >nul 2>&1
+	rmdir /s /q "%HOLD_DIR%" >nul 2>&1
 	echo [INFO] Cleaning Done.....
 
 endlocal

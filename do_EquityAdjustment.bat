@@ -68,5 +68,7 @@ echo [INFO] Running equityAdjustment...
 	rmdir /s /q "%LOG_DIR%" >nul 2>&1
 	del /q "%TRANS_DIR%\*" >nul 2>&1
 	rmdir /s /q "%TRANS_DIR%" >nul 2>&1
+	del /q "%HOLD_DIR%\*" >nul 2>&1
+	rmdir /s /q "%HOLD_DIR%" >nul 2>&1
 	echo [INFO] Cleaning Done.....
 endlocal
