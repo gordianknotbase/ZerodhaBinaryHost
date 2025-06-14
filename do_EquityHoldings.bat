@@ -58,7 +58,10 @@ if "!LOCAL_VERSION!" NEQ "%LATEST_VERSION%" (
     rmdir /s /q "%TARGET_DIR%" >nul 2>&1
 
     echo [%date% %time%] [INFO] Extracting new setup...
-    powershell -Command "Expand-Archive -Path '%ZIP_FILE%' -DestinationPath '%APP_DIR%' -Force"
+    powershell -Command "Expand-Archive -Path '%ZIP_FILE%' -DestinationPath '%APP_DIR%' -Force" || (
+       echo [%date% %time%] [ERROR] Failed to extract ZIP file.
+       exit /b 1
+   )
 ) else (
     echo [%date% %time%] [INFO] Already on the latest version.
 )
